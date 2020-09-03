@@ -31,20 +31,15 @@ public class MultipartEntity {
     }
 
     public static String genBoundary(List<MultipartEntity> entities) {
-        return "----HttpKitFormBoundary" + System.currentTimeMillis();
+        return "HttpKitBoundary" + System.currentTimeMillis();
     }
 
     public static ByteBuffer encode(String boundary, List<MultipartEntity> entities) throws IOException {
         DynamicBytes bytes = new DynamicBytes(entities.size() * 1024);
         for (MultipartEntity e : entities) {
             bytes.append("--").append(boundary).append(HttpUtils.CR, HttpUtils.LF);
-            bytes.append("Content-Disposition: form-data; name=\"");
-            bytes.append(e.name, HttpUtils.UTF_8);
-            if (e.filename != null) {
-                bytes.append("\"; filename=\"").append(e.filename).append("\"\r\n");
-            } else {
-                bytes.append("\"\r\n");
-            }
+
+            //addFormContentDisposition(bytes, e);
 
             if (e.contentType != null) {
                 bytes.append("Content-Type: ").append(e.contentType).append("\r\n\r\n");
@@ -78,5 +73,15 @@ public class MultipartEntity {
 
         bytes.append("--").append(boundary).append("--\r\n");
         return ByteBuffer.wrap(bytes.get(), 0, bytes.length());
+    }
+
+    private static void addFormContentDisposition(DynamicBytes bytes, MultipartEntity e) {
+        bytes.append("Content-Disposition: form-data; name=\"");
+        bytes.append(e.name, HttpUtils.UTF_8);
+        if (e.filename != null) {
+            bytes.append("\"; filename=\"").append(e.filename).append("\"\r\n");
+        } else {
+            bytes.append("\"\r\n");
+        }
     }
 }

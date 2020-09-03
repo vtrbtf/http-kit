@@ -77,7 +77,7 @@
             boundary (MultipartEntity/genBoundary entities)]
         (-> r
             (assoc-in [:headers "Content-Type"]
-                      (str "multipart/form-data; boundary=" boundary))
+                      (str "multipart/mixed; boundary=" boundary))
             (assoc :body (MultipartEntity/encode boundary entities))))
       r)))
 

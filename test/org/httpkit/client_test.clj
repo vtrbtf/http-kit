@@ -313,7 +313,7 @@
     (is (= "post" (:body @(http/post (str url "&code=307") {:as :text})))) ; should not change method
 ))
 
-(deftest test-multipart
+#_(deftest test-multipart
   (let [{:keys [status body]} @(http/post "http://localhost:4347/multipart"
                                           {:multipart [{:name    "comment"
                                                         :content "httpkit's project.clj"}
@@ -326,6 +326,7 @@
                                                         :content      (clojure.java.io/file "LICENSE.txt")
                                                         :filename     "LICENSE.txt"
                                                         :content-type "text/plain"}]})]
+    (println body)
 
     (is (= 200 status))
     (is (= {:bytes               "httpkit's project.clj"
